@@ -1,0 +1,47 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="helloBean" class="com.edu.abhi.common.HelloWorld">
+		<property name="name" value="Abhishek Khare Spring 3" />
+	</bean>
+	<bean id="OutputHelper" class="com.edu.abhi.output.OutputHelper">
+		<property name="outputGenerator" ref="CsvOutputGenerator" />
+	</bean>
+
+	<bean id="CsvOutputGenerator" class="com.edu.abhi.output.impl.CsvOutputGenerator" />
+	<bean id="JsonOutputGenerator" class="com.edu.abhi.output.impl.JsonOutputGenerator" />
+
+
+	<!-- Setter DI -->
+	<bean id="OutputHelperSetter" class="com.edu.abhi.dependencyinjection.setter.OutputHelper">
+		<property name="outputGenerator">
+			<ref bean="CsvOutputGenerator" />
+		</property>
+	</bean>
+	<!-- Constructor DI -->
+	<bean id="OutputHelperConstructor"
+		class="com.edu.abhi.dependencyinjection.constructor.OutputHelper">
+		<constructor-arg>
+			<ref bean="CsvOutputGenerator" />
+		</constructor-arg>
+	</bean>
+	<!-- Multiple Constructor Ambiguity -->
+	<bean id="CustomerBean" class="com.edu.abhi.dependencyinjection.constructor.multipleconstructor.Customer">
+
+		<constructor-arg type="java.lang.String">
+			<value>Abhishek</value>
+		</constructor-arg>
+
+		<constructor-arg type="java.lang.String">
+			<value>188</value>
+		</constructor-arg>
+
+		<constructor-arg type="int">
+			<value>28</value>
+		</constructor-arg>
+
+	</bean>
+
+</beans>
