@@ -1,7 +1,9 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
-	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	<bean id="helloBean" class="com.edu.abhi.common.HelloWorld">
 		<property name="name" value="Abhishek Khare Spring 3" />
@@ -20,6 +22,20 @@
 			<ref bean="CsvOutputGenerator" />
 		</property>
 	</bean>
+	<bean id="FileNameGenerator"
+		class="com.edu.abhi.dependencyinjection.setter.FileNameGenerator">
+		<property name="name" value="abhishek1" />
+		<property name="type" value="txt" />
+	</bean>
+	<bean id="FileNameGenerator1"
+		class="com.edu.abhi.dependencyinjection.setter.FileNameGenerator">
+		<property name="name">
+			<value>abhishek</value>
+		</property>
+		<property name="type">
+			<value>txt</value>
+		</property>
+	</bean>
 	<!-- Constructor DI -->
 	<bean id="OutputHelperConstructor"
 		class="com.edu.abhi.dependencyinjection.constructor.OutputHelper">
@@ -28,20 +44,342 @@
 		</constructor-arg>
 	</bean>
 	<!-- Multiple Constructor Ambiguity -->
-	<bean id="CustomerBean" class="com.edu.abhi.dependencyinjection.constructor.multipleconstructor.Customer">
-
+	<bean id="CustomerBean"
+		class="com.edu.abhi.dependencyinjection.constructor.multipleconstructor.Customer">
 		<constructor-arg type="java.lang.String">
 			<value>Abhishek</value>
 		</constructor-arg>
-
 		<constructor-arg type="java.lang.String">
 			<value>188</value>
 		</constructor-arg>
-
 		<constructor-arg type="int">
 			<value>28</value>
 		</constructor-arg>
+	</bean>
+	<!-- Inner Bean -->
+	<bean id="CustomerInnerBean" class="com.edu.abhi.innerbean.Customer">
+		<property name="person" ref="PersonInnerBean" />
+	</bean>
+	<bean id="PersonInnerBean" class="com.edu.abhi.innerbean.Person">
+		<property name="name" value="abhishek" />
+		<property name="address" value="address1" />
+		<property name="age" value="28" />
+	</bean>
+	<bean id="CustomerInnerBeanC" class="com.edu.abhi.innerbean.Customer">
+		<constructor-arg>
+			<bean class="com.edu.abhi.innerbean.Person">
+				<property name="name" value="abhishek1" />
+				<property name="address" value="address2" />
+				<property name="age" value="28" />
+			</bean>
+		</constructor-arg>
+	</bean>
+	<!-- Singleton this is by default - Return a single bean instance per Spring 
+		IoC container -->
+	<bean id="customerService" class="com.edu.abhi.singleton.CustomerService" />
+	<!-- Prototype – Return a new bean instance each time when requested -->
+	<bean id="customerServiceP" class="com.edu.abhi.singleton.CustomerService"
+		scope="prototype" />
+	<!-- Collections -->
+	<bean id="CustomerBeanCollection" class="com.edu.abhi.collections.Customer">
+		<!-- java.util.List -->
+		<property name="lists">
+			<list>
+				<value>1</value>
+				<ref bean="PersonBean" />
+				<bean class="com.edu.abhi.innerbean.Person">
+					<property name="name" value="abhiList" />
+					<property name="address" value="address" />
+					<property name="age" value="28" />
+				</bean>
+			</list>
+		</property>
 
+		<!-- java.util.Set -->
+		<property name="sets">
+			<set>
+				<value>1</value>
+				<ref bean="PersonBean" />
+				<bean class="com.edu.abhi.innerbean.Person">
+					<property name="name" value="abhiSet" />
+					<property name="address" value="address" />
+					<property name="age" value="28" />
+				</bean>
+			</set>
+		</property>
+
+		<!-- java.util.Map -->
+		<property name="maps">
+			<map>
+				<entry key="Key 1" value="1" />
+				<entry key="Key 2" value-ref="PersonBean" />
+				<entry key="Key 3">
+					<bean class="com.edu.abhi.innerbean.Person">
+						<property name="name" value="abhiMap" />
+						<property name="address" value="address" />
+						<property name="age" value="28" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+		<!-- java.util.Properties -->
+		<property name="pros">
+			<props>
+				<prop key="admin">admin@nospam.com</prop>
+				<prop key="support">support@nospam.com</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="PersonBean" class="com.edu.abhi.innerbean.Person">
+		<property name="name" value="abhi1" />
+		<property name="address" value="address 1" />
+		<property name="age" value="28" />
+	</bean>
+	<!-- ListFactoryBean -->
+	<bean id="CustomerBeanL" class="com.edu.abhi.collections.Customer">
+		<property name="lists">
+			<bean class="org.springframework.beans.factory.config.ListFactoryBean">
+				<property name="targetListClass">
+					<value>java.util.ArrayList</value>
+				</property>
+				<property name="sourceList">
+					<list>
+						<value>1</value>
+						<value>2</value>
+						<value>3</value>
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	<!-- SetFactoryBean -->
+	<bean id="CustomerBeanS" class="com.edu.abhi.collections.Customer">
+		<property name="sets">
+			<bean class="org.springframework.beans.factory.config.SetFactoryBean">
+				<property name="targetSetClass">
+					<value>java.util.HashSet</value>
+				</property>
+				<property name="sourceSet">
+					<list>
+						<value>1</value>
+						<value>2</value>
+						<value>3</value>
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	<!-- MapFactoryBean -->
+	<bean id="CustomerBeanM" class="com.edu.abhi.collections.Customer">
+		<property name="maps">
+			<bean class="org.springframework.beans.factory.config.MapFactoryBean">
+				<property name="targetMapClass">
+					<value>java.util.HashMap</value>
+				</property>
+				<property name="sourceMap">
+					<map>
+						<entry key="Key1" value="1" />
+						<entry key="Key2" value="2" />
+						<entry key="Key3" value="3" />
+					</map>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	<!-- Date Injection -->
+	<bean id="dateFormat" class="java.text.SimpleDateFormat">
+		<constructor-arg value="yyyy-MM-dd" />
+	</bean>
+	<bean id="datebo" class="com.edu.abhi.datehandler.DateBO">
+		<property name="date">
+			<bean factory-bean="dateFormat" factory-method="parse">
+				<constructor-arg value="2016-01-31" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="dateEditor"
+		class="org.springframework.beans.propertyeditors.CustomDateEditor">
+		<constructor-arg>
+			<bean class="java.text.SimpleDateFormat">
+				<constructor-arg value="yyyy-MM-dd" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="true" />
+	</bean>
+	<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+		<property name="customEditors">
+			<map>
+				<entry key="java.util.Date">
+					<ref local="dateEditor" />
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="dateboc" class="com.edu.abhi.datehandler.DateBO">
+		<property name="date" value="2016-02-27" />
+	</bean>
+	<!-- Inheritance -->
+	<bean id="BaseCountryMalaysia" class="com.edu.abhi.inheritance.Country">
+		<property name="country" value="Malaysia" />
+	</bean>
+	<bean id="CountryBean" parent="BaseCountryMalaysia">
+		<property name="action" value="buy" />
+		<property name="type" value="1" />
+	</bean>
+	<bean id="BaseCountryMalaysia1" class="com.edu.abhi.inheritance.Country"
+		abstract="true">
+		<property name="country" value="USA" />
+	</bean>
+	<bean id="CountryBean1" parent="BaseCountryMalaysia1">
+		<property name="action" value="sell" />
+		<property name="type" value="2" />
+	</bean>
+	<bean id="BaseCountryMalaysia2" abstract="true">
+		<property name="country" value="Malaysia" />
+	</bean>
+	<bean id="CountryBean2" parent="BaseCountryMalaysia2" class="com.edu.abhi.inheritance.Country">
+		<property name="action" value="buy" />
+		<property name="type" value="2" />
+	</bean>
+	<!-- Override Inherited Values -->
+	<bean id="CountryBean3" parent="BaseCountryMalaysia1">
+		<property name="country" value="Japan" />
+		<property name="action" value="buy" />
+		<property name="type" value="1" />
+	</bean>
+	<!-- dependency checking with @Required -->
+	<bean
+		class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor" />
+	<!-- Uncomment when trying to see how @Required fails <bean id="CustomerBeanN" 
+		class="com.edu.abhi.dependencychecking.Customer" > <property name="action" 
+		value="buy" /> <property name="type" value="1" /> </bean> <bean id="PersonBeanN" 
+		class="com.edu.abhi.dependencychecking.Person"> <property name="name" value="abhishek" 
+		/> <property name="address" value="address ABC" /> <property name="age" value="29" 
+		/> </bean> -->
+	<bean id="CustomerBeanR" class="com.edu.abhi.dependencychecking.Customer">
+		<property name="action" value="buy" />
+		<property name="type" value="1" />
+		<property name="person" ref="PersonBeanR" />
+	</bean>
+	<bean id="PersonBeanR" class="com.edu.abhi.dependencychecking.Person">
+		<property name="name" value="abhishek" />
+		<property name="address" value="address ABC" />
+		<property name="age" value="29" />
+	</bean>
+	<!-- InitializingBean and DisposableBean -->
+	<bean id="customerServiceID" class="com.edu.abhi.intidisposebean.CustomerService">
+		<property name="message" value="i'm property message" />
+	</bean>
+	<!-- Define bean methods to act as init and destroy -->
+	<bean id="customerServiceIDB" class="com.edu.abhi.intidisposebean.CustomerServiceB"
+		init-method="initIt" destroy-method="cleanUp">
+		<property name="message" value="i'm property message" />
+	</bean>
+	<bean
+		class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
+	<bean id="customerServicePost" class="com.edu.abhi.intidisposebean.CustomerServicePost">
+		<property name="message" value="i'm property message" />
+	</bean>
+	<!-- Spring Expression Language -->
+	<bean id="ItemBeanEL" class="com.edu.abhi.expressionlanguage.xml.Item">
+		<property name="name" value="itemA" />
+		<property name="qty" value="10" />
+		<property name="qtyOnHand" value="99" />
+	</bean>
+	<bean id="addressBeanEL" class="com.edu.abhi.expressionlanguage.xml.Address">
+		<property name="street" value="Block ABC, LakeView" />
+		<property name="postcode" value="98700" />
+		<property name="country" value="US" />
+	</bean>
+	<bean id="priceBeanEL" class="com.edu.abhi.expressionlanguage.xml.Price" />
+	<bean id="CustomerBeanEL" class="com.edu.abhi.expressionlanguage.xml.Customer">
+		<property name="item" value="#{ItemBeanEL}" />
+		<property name="itemName" value="#{ItemBeanEL.name}" />
+		<property name="address" value="#{addressBeanEL}" />
+		<property name="country" value="#{addressBeanEL.country}" />
+		<property name="fullAddress" value="#{addressBeanEL.getFullAddress('abhi')}" />
+		<property name="name" value="#{'abhi'.toUpperCase()}" />
+		<property name="amount" value="#{priceBeanEL.getSpecialPrice()}" />
+	</bean>
+	<bean id="operatorBeanEL" class="com.edu.abhi.expressionlanguage.xml.Operators">
+		<property name="testEqual" value="#{1 == 1}" />
+		<property name="testNotEqual" value="#{1 != 1}" />
+		<property name="testLessThan" value="#{1 lt 1}" />
+		<property name="testLessThanOrEqual" value="#{1 le 1}" />
+		<property name="testGreaterThan" value="#{1 > 1}" />
+		<property name="testGreaterThanOrEqual" value="#{1 >= 1}" />
+
+		<property name="testAnd"
+			value="#{numberBean.no == 999 and numberBean.no lt 900}" />
+		<property name="testOr"
+			value="#{numberBean.no == 999 or numberBean.no lt 900}" />
+		<property name="testNot" value="#{!(numberBean.no == 999)}" />
+
+		<property name="testAdd" value="#{1 + 1}" />
+		<property name="testAddString" value="#{'1' + '@' + '1'}" />
+		<property name="testSubtraction" value="#{1 - 1}" />
+		<property name="testMultiplication" value="#{1 * 1}" />
+		<property name="testDivision" value="#{10 / 2}" />
+		<property name="testModulus" value="#{10 % 10}" />
+		<property name="testExponentialPower" value="#{2 ^ 2}" />
+		<property name="warning"
+			value="#{ItemBeanEL.qtyOnHand &lt; 100 ? true : false}" />
+	</bean>
+	<bean id="collectionsBeanEL" class="com.edu.abhi.expressionlanguage.xml.Collections">
+		<property name="mapA" value="#{testBean.map['MapA']}" />
+		<property name="list" value="#{testBean.list[0]}" />
+	</bean>
+	<bean id="testBean" class="com.edu.abhi.expressionlanguage.annotation.Test" />
+	<context:component-scan base-package="com.edu.abhi.expressionlanguage.annotation" />
+	<!-- AutoWire -->
+	<!-- No AutoWiring -->
+	<bean id="customerAutowireN" class="com.edu.abhi.autowire.CustomerN">
+		<property name="personN" ref="personAutowireN" />
+		<property name="id" value="123456"></property>
+	</bean>
+	<bean id="personAutowireN" class="com.edu.abhi.autowire.PersonN">
+		<property name="name" value="Abhishek"></property>
+		<property name="age" value="30"></property>
+	</bean>
+	<!-- By Name -->
+	<bean id="customerN" class="com.edu.abhi.autowire.CustomerN"
+		autowire="byName" />
+	<bean id="personN" class="com.edu.abhi.autowire.PersonN">
+		<property name="name" value="By Name"></property>
+		<property name="age" value="45"></property>
+	</bean>
+	<!-- By Type -->
+	<bean id="customerT" class="com.edu.abhi.autowire.CustomerT"
+		autowire="byType" />
+	<bean id="personT" class="com.edu.abhi.autowire.PersonT" autowire="byType">
+		<property name="name" value="By Type"></property>
+		<property name="age" value="35"></property>
+	</bean>
+	<!-- Constructor -->
+	<bean id="customerC" class="com.edu.abhi.autowire.CustomerC"
+		autowire="constructor" />
+	<bean id="personC" class="com.edu.abhi.autowire.PersonC">
+		<property name="name" value="constructor"></property>
+		<property name="age" value="25"></property>
+	</bean>
+	<!-- @Autowire -->
+	<context:annotation-config />
+	<bean id="CustomerA" class="com.edu.abhi.autowire.CustomerA">
+		<property name="action" value="buy" />
+		<property name="type" value="1" />
 	</bean>
 
+	<bean id="PersonA" class="com.edu.abhi.autowire.PersonA">
+		<property name="name" value="Abhishek" />
+		<property name="age" value="39" />
+	</bean>
+	<bean id="CustomerAS" class="com.edu.abhi.autowire.CustomerAS">
+		<property name="action" value="sell" />
+		<property name="type" value="2" />
+	</bean>
+	<bean id="CustomerCS" class="com.edu.abhi.autowire.CustomerCS">
+		<property name="action" value="barter" />
+		<property name="type" value="3" />
+	</bean>
 </beans>
+
