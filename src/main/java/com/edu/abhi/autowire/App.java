@@ -52,5 +52,9 @@ public class App {
 			CustomerCS cust = (CustomerCS) context.getBean("CustomerCS");
 			System.out.println(cust);
 		}
+		{
+			CustomerAQ cust = (CustomerAQ) context.getBean("CustomerAQ");
+			System.out.println(cust);
+		}
 	}
 }
