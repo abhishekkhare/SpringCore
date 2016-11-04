@@ -403,7 +403,6 @@
 	<bean id="hijackThrowExceptionBean" class="com.edu.abhi.aop.HijackThrowException" />
 	<bean id="hijackAroundMethodBean" class="com.edu.abhi.aop.HijackAroundMethod" />
 
-
 	<bean id="customerServiceProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
 		<property name="target" ref="customerServiceAOP" />
 		<property name="interceptorNames">
@@ -438,4 +437,31 @@
 			</list>
 		</property>
 	</bean>
+	<!-- Bean Post Proessor -->
+	<bean id="helloWorld" class="com.edu.abhi.beanpostprocessor.HelloWorld"
+		init-method="init" destroy-method="destroy">
+		<property name="message" value="Hello World!" />
+	</bean>
+
+	<bean class="com.edu.abhi.beanpostprocessor.InitHelloWorld" />
+
+	<!-- Event Handling -->
+	<bean id="cStartEventHandler" class="com.edu.abhi.eventhandling.CStartEventHandler" />
+	<bean id="cStopEventHandler" class="com.edu.abhi.eventhandling.CStopEventHandler" />
+	<bean id="cRefereshEventHandler" class="com.edu.abhi.eventhandling.CRefreshEventHandler" />
+	<bean id="cCloseEventHandler" class="com.edu.abhi.eventhandling.CClosedEventHandler" />
+
+	<bean id="customEventHandler" class="com.edu.abhi.eventhandling.custom.CustomEventHandler" />
+	<bean id="customEventPublisher" class="com.edu.abhi.eventhandling.custom.CustomEventPublisher" />
+
+	<!-- Aspect J -->
+	<bean name="employee" class="com.edu.abhi.aop.aspectj.Employee">
+		<property name="name" value="Dummy Name"></property>
+	</bean>
+	<bean name="employeeService" class="com.edu.abhi.aop.aspectj.EmployeeService">
+		<property name="employee" ref="employee"></property>
+	</bean>
+	<bean name="employeeAspect" class="com.edu.abhi.aop.aspectj.EmployeeAspect" />
+	<bean name="employeeAfterAspect" class="com.edu.abhi.aop.aspectj.EmployeeAfterAspect" />
+
 </beans>
